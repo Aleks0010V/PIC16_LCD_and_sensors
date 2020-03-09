@@ -8,6 +8,7 @@
 
 #include <xc.h>
 #include <stdbool.h>
+#include <pic16f18875.h>
 #include "config.h"
 #include "uart.h"
 #include "lcd.h"
@@ -99,14 +100,15 @@ void adc_init(void){
     ADIF = 0;
     ADIE = 1;
     
-    ADCLK = 1; // Fosc / 4
+    ADCLKbits.ADCCS = 0b000111; // Fosc / 16
+    ADACQ = 255;
 
     ADREFbits.ADNREF = 0; // Vref- is Vss
-    ADREFbits.ADPREF = 0b0; // Vref+ is FVR
+    ADREFbits.ADPREF = 0b0; // Vref+ is Vdd
 
     ADPCH = 0b000100; // channel ANA4
     
-    ADCON3bits.ADTMD = 3;  // when set the ADIF
+    ADCON3bits.ADTMD = 3;  // Always set ADTIF at end of calculation
     
     ADFRM0 = 1; // result is right-justified
 //    ADCON2bits.ADMD = 0; // Basic mode
